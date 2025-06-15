@@ -12,5 +12,11 @@ sealed class ScreenState {
 class MainScreenViewModel : ViewModel() {
     private val _screenState = MutableStateFlow<ScreenState>(ScreenState.LoadingState)
     val screenState: StateFlow<ScreenState> = _screenState
+
+    fun Create() {}
+    fun Delete(id: Int) {}
+    fun Reset() {}
+    fun Apply() {}
+    fun Load(id: Int) {}
 }
 

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Tree Database App</string>
+    <string name="create">New</string>
+    <string name="delete">Del</string>
+    <string name="reset">Reset</string>
+    <string name="apply">Apply</string>
+    <string name="load">Load selected node</string>
+    <string name="remote_database">Remote Database</string>
+    <string name="controls">Controls</string>
+    <string name="cached_elements">Cached Elements</string>
 </resources>
