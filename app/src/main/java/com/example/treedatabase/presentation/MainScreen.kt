@@ -17,9 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,16 +27,14 @@ import com.example.treedatabase.presentation.ui.theme.Pink80
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey40
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey80
 
-
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier,
     viewModel: MainScreenViewModel = viewModel()
 ) {
-    val screenState = viewModel.screenState.collectAsState().value
+    val screenState by viewModel.screenState.collectAsState()
 
     Column(modifier = modifier.padding(8.dp)) {
-
         Text(
             text = stringResource(R.string.cached_elements),
             modifier = Modifier
@@ -53,7 +48,9 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(10.dp),
-            lines = listOf("*nodeA", "   nodeB", "   nodeC", "     nodeD", "     nodeE")
+            lines = screenState.cacheLines,
+            onItemClick = { viewModel.cacheItemClick(it) },
+            selectedIndex = screenState.selectedCacheLine
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -87,7 +84,9 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(8.dp),
-            lines = listOf("*nodeA", "   nodeB", "   nodeC", "     nodeD", "     nodeE")
+            lines = screenState.databaseLines,
+            selectedIndex = screenState.selectedDatabaseLine,
+            onItemClick = { viewModel.databaseItemClick(it) }
         )
     }
 }
@@ -96,21 +95,21 @@ fun MainScreen(
 fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = viewModel()) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Button(onClick = { viewModel.Create() }) {
+            Button(onClick = { viewModel.create() }) {
                 Text(stringResource(R.string.create))
             }
-            Button(onClick = { viewModel.Delete(0) }) {
+            Button(onClick = { viewModel.delete(0) }) {
                 Text(stringResource(R.string.delete))
             }
-            Button(onClick = { viewModel.Reset() }) {
+            Button(onClick = { viewModel.reset() }) {
                 Text(stringResource(R.string.reset))
             }
-            Button(onClick = { viewModel.Apply() }) {
+            Button(onClick = { viewModel.apply() }) {
                 Text(stringResource(R.string.apply))
             }
         }
         Button(
-            onClick = { viewModel.Load(0) },
+            onClick = { viewModel.load(0) },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(stringResource(R.string.load))
@@ -119,28 +118,20 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
 }
 
 @Composable
-fun TreeView(modifier: Modifier = Modifier.fillMaxSize(), lines: List<String> = emptyList()) {
-    var selectedIndex by remember { mutableIntStateOf(-1) }
-
+fun TreeView(
+    modifier: Modifier = Modifier.fillMaxSize(),
+    lines: List<String> = emptyList(),
+    selectedIndex: Int = -1,
+    onItemClick: (Int) -> Unit
+) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(lines) { index, line ->
-            TreeItem(
+            Text(
                 text = line,
-                id = index,
-                selected = index == selectedIndex,
-                onItemClick = { id ->
-                    selectedIndex = if (selectedIndex == id) -1 else id
-                })
+                modifier = Modifier
+                    .background(if (index == selectedIndex) PurpleGrey80 else PurpleGrey40)
+                    .clickable { onItemClick(index) }
+            )
         }
     }
-}
-
-@Composable
-fun TreeItem(text: String, id: Int, selected: Boolean, onItemClick: (Int) -> Unit) {
-    Text(
-        text = text,
-        modifier = Modifier
-            .background(if (selected) PurpleGrey80 else PurpleGrey40)
-            .clickable { onItemClick(id) }
-    )
 }
