@@ -1,6 +1,7 @@
 package com.example.treedatabase.presentation
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -12,7 +13,7 @@ data class ScreenState(
     val selectedDatabaseLine: Int = -1
 )
 
-
+@HiltViewModel
 class MainScreenViewModel : ViewModel() {
     private val initialState: ScreenState = ScreenState(
         cacheLines = listOf("*nodeA", "   nodeB", "   nodeC", "     nodeD", "     nodeE"),

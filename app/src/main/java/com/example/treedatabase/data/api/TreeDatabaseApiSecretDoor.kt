@@ -1,9 +1,11 @@
 package com.example.treedatabase.data.api
 
+import com.example.treedatabase.data.api.db.RemoteNodeEntity
 import com.example.treedatabase.domain.models.Node
 import kotlinx.coroutines.flow.Flow
 
 // Not real API. Used for remote db simulation
 interface TreeDatabaseApiSecretDoor {
-    fun fetchAll(depth: Int) : Flow<Node>
+    fun fetchAll() : Flow<RemoteNodeEntity>
+    fun resetDatabase()
 }

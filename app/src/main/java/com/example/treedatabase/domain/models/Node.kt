@@ -1,3 +1,3 @@
 package com.example.treedatabase.domain.models
 
-data class Node (val id: String, val value: String, val parent: Node?)
+data class Node (val id: Int, val value: String, val parent: Node?)
