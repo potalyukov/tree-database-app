@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.treedatabase.R
+import com.example.treedatabase.presentation.model.NodeUi
 import com.example.treedatabase.presentation.ui.theme.Pink80
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey40
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey80
@@ -33,6 +34,7 @@ fun MainScreen(
     viewModel: MainScreenViewModel = viewModel()
 ) {
     val screenState by viewModel.screenState.collectAsState()
+    val remoteNodes by screenState.databaseLines.collectAsState(emptyList())
 
     Column(modifier = modifier.padding(8.dp)) {
         Text(
@@ -48,7 +50,7 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(10.dp),
-            lines = screenState.cacheLines,
+            nodes = emptyList(),
             onItemClick = { viewModel.cacheItemClick(it) },
             selectedIndex = screenState.selectedCacheLine
         )
@@ -84,7 +86,7 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(8.dp),
-            lines = screenState.databaseLines,
+            nodes = remoteNodes,
             selectedIndex = screenState.selectedDatabaseLine,
             onItemClick = { viewModel.databaseItemClick(it) }
         )
@@ -120,14 +122,14 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
 @Composable
 fun TreeView(
     modifier: Modifier = Modifier.fillMaxSize(),
-    lines: List<String> = emptyList(),
+    nodes: List<NodeUi> = emptyList(),
     selectedIndex: Int = -1,
     onItemClick: (Int) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(lines) { index, line ->
+        itemsIndexed(nodes) { index, node ->
             Text(
-                text = line,
+                text = "#${node.id}: ${node.value}",
                 modifier = Modifier
                     .background(if (index == selectedIndex) PurpleGrey80 else PurpleGrey40)
                     .clickable { onItemClick(index) }

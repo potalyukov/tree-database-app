@@ -1,14 +1,14 @@
-package com.example.treedatabase.data.api.db
+package com.example.treedatabase.data.source.remote.api.simulated_remote_db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.treedatabase.data.model.NodeData
 
 @Entity(tableName = "nodes")
 data class RemoteNodeEntity(
     @PrimaryKey val uid: Int,
-    @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "value") val value: String,
-    @ColumnInfo(name = "parentId") val parentId: Int,
+    @ColumnInfo(name = "parentId") val parentId: Int?,
     @ColumnInfo(name = "deleted") val deleted: Boolean
 )
