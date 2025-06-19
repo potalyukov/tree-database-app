@@ -34,7 +34,6 @@ fun MainScreen(
     viewModel: MainScreenViewModel = viewModel()
 ) {
     val screenState by viewModel.screenState.collectAsState()
-    val remoteNodes by screenState.databaseLines.collectAsState(emptyList())
 
     Column(modifier = modifier.padding(8.dp)) {
         Text(
@@ -50,7 +49,7 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(10.dp),
-            nodes = emptyList(),
+            nodes = screenState.cacheLines,
             onItemClick = { viewModel.cacheItemClick(it) },
             selectedIndex = screenState.selectedCacheLine
         )
@@ -86,7 +85,7 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(8.dp),
-            nodes = remoteNodes,
+            nodes = screenState.databaseLines,
             selectedIndex = screenState.selectedDatabaseLine,
             onItemClick = { viewModel.databaseItemClick(it) }
         )

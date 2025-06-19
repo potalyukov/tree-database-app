@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 
-@Database(entities = [RemoteNodeEntity::class], version = 1)
+@Database(entities = [LocalNodeEntity::class], version = 1)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun localNodeDao(): LocalNodeDao
 }

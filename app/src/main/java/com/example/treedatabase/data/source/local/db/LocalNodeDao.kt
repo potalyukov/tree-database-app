@@ -13,16 +13,16 @@ interface LocalNodeDao {
     fun getAllNodes(): Flow<List<LocalNodeEntity>>
 
     @Query("SELECT * FROM nodes WHERE uid = :uid")
-    suspend fun getNodeById(uid: Int): LocalNodeEntity?
+    suspend fun getNodeById(uid: Long): LocalNodeEntity?
 
     @Query("UPDATE nodes SET deleted = 1 WHERE uid = :uid")
-    suspend fun deleteNodeById(uid: Int)
+    suspend fun deleteNodeById(uid: Long)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun applyNodes(nodes: List<LocalNodeEntity>)
 
     @Query("SELECT * FROM nodes WHERE parentId = :parentId")
-    suspend fun getDirectChildren(parentId: Int): List<LocalNodeEntity>
+    suspend fun getDirectChildren(parentId: Long): List<LocalNodeEntity>
 
     @Query("DELETE FROM nodes")
     suspend fun reset()

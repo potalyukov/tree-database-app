@@ -4,6 +4,10 @@ import com.example.treedatabase.data.repository.TreeDatabaseRepositoryImpl
 import com.example.treedatabase.domain.contracts.TreeDatabaseRepository
 import com.example.treedatabase.domain.interactors.ApplyOnRemoteInteractor
 import com.example.treedatabase.domain.interactors.ApplyOnRemoteInteractorImpl
+import com.example.treedatabase.domain.interactors.CreateNewInCacheInteractor
+import com.example.treedatabase.domain.interactors.CreateNewInCacheInteractorImpl
+import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractor
+import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractorImpl
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractorImpl
 import com.example.treedatabase.domain.interactors.ResetAllInteractor
@@ -28,4 +32,10 @@ abstract class AppModule {
 
     @Binds
     internal abstract fun bindResetAllInteractor(impl: ResetAllInteractorImpl): ResetAllInteractor
+
+    @Binds
+    internal abstract fun bindFetchLocalDatabaseInteractor(impl: FetchLocalDatabaseInteractorImpl): FetchLocalDatabaseInteractor
+
+    @Binds
+    internal abstract fun bindCreateNewInCacheInteractor(impl: CreateNewInCacheInteractorImpl): CreateNewInCacheInteractor
 }

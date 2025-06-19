@@ -11,6 +11,7 @@ import com.example.treedatabase.data.mappers.NodeMapper
 import com.example.treedatabase.data.source.local.LocalDataSource
 import com.example.treedatabase.data.source.local.LocalDataSourceImpl
 import com.example.treedatabase.data.source.local.db.LocalDatabase
+import com.example.treedatabase.data.source.local.db.LocalNodeDao
 import com.example.treedatabase.data.source.remote.RemoteDataSource
 import com.example.treedatabase.data.source.remote.RemoteDataSourceImpl
 import dagger.Binds
@@ -56,6 +57,12 @@ abstract class DataModule {
         @Singleton
         fun provideRemoteNodeDao(remoteDatabase: RemoteDatabase): RemoteNodeDao {
             return remoteDatabase.remoteNodeDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideLocalNodeDao(localDatabase: LocalDatabase): LocalNodeDao {
+            return localDatabase.localNodeDao()
         }
 
         @Provides

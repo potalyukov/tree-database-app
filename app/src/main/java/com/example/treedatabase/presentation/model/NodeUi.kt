@@ -1,3 +1,3 @@
 package com.example.treedatabase.presentation.model
 
-data class NodeUi(val id: Int, val value: String, val parentId: Int?, val deleted: Boolean)
+data class NodeUi(val id: Long, val value: String, val parentId: Long?, val deleted: Boolean)

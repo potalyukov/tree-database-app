@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "nodes")
 data class LocalNodeEntity(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Long = 0,
     @ColumnInfo(name = "value") val value: String,
-    @ColumnInfo(name = "parentId") val parentId: Int?,
+    @ColumnInfo(name = "parentId") val parentId: Long?,
     @ColumnInfo(name = "deleted") val deleted: Boolean
 )
