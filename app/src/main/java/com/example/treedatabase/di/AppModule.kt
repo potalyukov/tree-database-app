@@ -6,10 +6,14 @@ import com.example.treedatabase.domain.interactors.ApplyOnRemoteInteractor
 import com.example.treedatabase.domain.interactors.ApplyOnRemoteInteractorImpl
 import com.example.treedatabase.domain.interactors.CreateNewInCacheInteractor
 import com.example.treedatabase.domain.interactors.CreateNewInCacheInteractorImpl
+import com.example.treedatabase.domain.interactors.DeleteInCacheInteractor
+import com.example.treedatabase.domain.interactors.DeleteInCacheInteractorImpl
 import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractorImpl
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractorImpl
+import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
+import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractorImpl
 import com.example.treedatabase.domain.interactors.ResetAllInteractor
 import com.example.treedatabase.domain.interactors.ResetAllInteractorImpl
 import dagger.Binds
@@ -38,4 +42,10 @@ abstract class AppModule {
 
     @Binds
     internal abstract fun bindCreateNewInCacheInteractor(impl: CreateNewInCacheInteractorImpl): CreateNewInCacheInteractor
+
+    @Binds
+    internal abstract fun bindDeleteInCacheInteractor(impl: DeleteInCacheInteractorImpl): DeleteInCacheInteractor
+
+    @Binds
+    internal abstract fun bindLoadRemoteNodeInteractor(impl: LoadRemoteNodeInteractorImpl): LoadRemoteNodeInteractor
 }

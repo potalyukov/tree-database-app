@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.treedatabase.domain.interactors.ApplyOnRemoteInteractor
 import com.example.treedatabase.domain.interactors.CreateNewInCacheInteractor
+import com.example.treedatabase.domain.interactors.DeleteInCacheInteractor
 import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
+import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
 import com.example.treedatabase.domain.interactors.ResetAllInteractor
 import com.example.treedatabase.domain.models.NodeDomain
 import com.example.treedatabase.presentation.mappers.PresentationNodeMapper
@@ -21,20 +23,25 @@ import javax.inject.Inject
 
 data class ScreenState(
     val databaseLines: List<NodeUi> = emptyList(),
-    val cacheLines: List<NodeUi> = emptyList(),
-    val selectedCacheLine: Int = -1,
-    val selectedDatabaseLine: Int = -1
+    val cacheLines: Map<Long, NodeUi> = emptyMap(),
+    val selectedCacheId: Long? = null,
+    val selectedRemoteId: Long? = null
 )
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val fetchRemoteDatabaseInteractor: FetchRemoteDatabaseInteractor,
-    private val fetchLocalDatabaseInteractor: FetchLocalDatabaseInteractor,
     private val applyOnRemoteInteractor: ApplyOnRemoteInteractor,
-    private val resetAllInteractor: ResetAllInteractor,
     private val createNewInCacheInteractor: CreateNewInCacheInteractor,
+    private val deleteInCacheInteractor: DeleteInCacheInteractor,
+    private val fetchLocalDatabaseInteractor: FetchLocalDatabaseInteractor,
+    private val fetchRemoteDatabaseInteractor: FetchRemoteDatabaseInteractor,
+    private val loadRemoteNodeInteractor: LoadRemoteNodeInteractor,
+    private val resetAllInteractor: ResetAllInteractor,
+
     private val mapper: PresentationNodeMapper
 ) : ViewModel() {
+
+    private var createdNodesCounter: Int = 0
 
     private val _cacheFlow =
         fetchLocalDatabaseInteractor().map { list -> list.map { mapper.toUi(it) } }
@@ -42,7 +49,10 @@ class MainScreenViewModel @Inject constructor(
         fetchRemoteDatabaseInteractor().map { list -> list.map { mapper.toUi(it) } }
 
     private val _combinedFlow = combine(_cacheFlow, _remoteFlow) { cache, remote ->
-        screenState.value.copy(databaseLines = remote, cacheLines = cache)
+        screenState.value.copy(
+            databaseLines = remote,
+            cacheLines = cache.associateBy { it.id }
+        )
     }
 
     private val _screenState = MutableStateFlow(ScreenState())
@@ -54,34 +64,49 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun cacheItemClick(index: Int) {
+    fun cacheItemClick(id: Long) {
         _screenState.update {
-            it.copy(selectedCacheLine = if (it.selectedCacheLine == index) -1 else index)
+            it.copy(selectedCacheId = if (it.selectedCacheId == id) null else id)
         }
     }
 
-    fun databaseItemClick(index: Int) {
+    fun databaseItemClick(id: Long) {
         _screenState.update {
-            it.copy(selectedDatabaseLine = if (it.selectedDatabaseLine == index) -1 else index)
+            it.copy(selectedRemoteId = if (it.selectedRemoteId == id) null else id)
         }
     }
 
     fun create() = viewModelScope.launch {
-        val parentListIndex = screenState.value.selectedCacheLine
-        if (parentListIndex == -1) return@launch
-        val selectedItem = screenState.value.cacheLines[parentListIndex]
-        val newItem = NodeDomain(value = "VALUE", parent = selectedItem.id, deleted = false)
+        val parentListId = screenState.value.selectedCacheId
+        val selectedItem = screenState.value.cacheLines.get(parentListId) ?: return@launch
+
+        val newItem = NodeDomain(
+            value = "node${createdNodesCounter++}",
+            parent = selectedItem.id,
+            deleted = false
+        )
+
         createNewInCacheInteractor(newItem)
     }
 
-    fun delete(id: Int) {}
+    fun deleteSelected() = screenState.value.selectedCacheId?.let {
+        viewModelScope.launch {
+            deleteInCacheInteractor.invoke(it)
+        }
+    }
+
     fun reset() = viewModelScope.launch {
         resetAllInteractor()
     }
 
-    fun apply() {
+    fun apply() = viewModelScope.launch {
+        applyOnRemoteInteractor.invoke()
     }
 
-    fun load(id: Int) {}
+    fun loadSelected() = screenState.value.selectedRemoteId?.let {
+        viewModelScope.launch {
+            loadRemoteNodeInteractor.invoke(it)
+        }
+    }
 }
 

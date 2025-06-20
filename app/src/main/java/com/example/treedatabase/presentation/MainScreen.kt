@@ -19,7 +19,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.treedatabase.R
@@ -49,9 +51,9 @@ fun MainScreen(
                 .background(Pink80)
                 .fillMaxWidth()
                 .padding(10.dp),
-            nodes = screenState.cacheLines,
+            nodes = screenState.cacheLines.values.toList(),
             onItemClick = { viewModel.cacheItemClick(it) },
-            selectedIndex = screenState.selectedCacheLine
+            selectedId = screenState.selectedCacheId
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -86,7 +88,7 @@ fun MainScreen(
                 .fillMaxWidth()
                 .padding(8.dp),
             nodes = screenState.databaseLines,
-            selectedIndex = screenState.selectedDatabaseLine,
+            selectedId = screenState.selectedRemoteId,
             onItemClick = { viewModel.databaseItemClick(it) }
         )
     }
@@ -99,7 +101,7 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
             Button(onClick = { viewModel.create() }) {
                 Text(stringResource(R.string.create))
             }
-            Button(onClick = { viewModel.delete(0) }) {
+            Button(onClick = { viewModel.deleteSelected() }) {
                 Text(stringResource(R.string.delete))
             }
             Button(onClick = { viewModel.reset() }) {
@@ -110,7 +112,7 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
             }
         }
         Button(
-            onClick = { viewModel.load(0) },
+            onClick = { viewModel.loadSelected() },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(stringResource(R.string.load))
@@ -122,16 +124,21 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
 fun TreeView(
     modifier: Modifier = Modifier.fillMaxSize(),
     nodes: List<NodeUi> = emptyList(),
-    selectedIndex: Int = -1,
-    onItemClick: (Int) -> Unit
+    selectedId: Long? = null,
+    onItemClick: (Long) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
+
         itemsIndexed(nodes) { index, node ->
+            val indent = "    ".repeat(node.depth)
+            val decoration = if (node.deleted) TextDecoration.LineThrough else TextDecoration.None
+
             Text(
-                text = "#${node.id}: ${node.value}",
+                text = "#[${node.id}]$indent * ${node.value}",
+                textDecoration = decoration,
                 modifier = Modifier
-                    .background(if (index == selectedIndex) PurpleGrey80 else PurpleGrey40)
-                    .clickable { onItemClick(index) }
+                    .background(if (node.id == selectedId) PurpleGrey80 else Color.Transparent)
+                    .clickable { onItemClick(node.id) }
             )
         }
     }

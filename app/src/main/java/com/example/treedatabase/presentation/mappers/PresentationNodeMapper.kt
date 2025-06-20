@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class PresentationNodeMapper @Inject constructor() {
 
-    fun toDomain(nodeUi:  NodeUi): NodeDomain {
+    fun toDomain(nodeUi: NodeUi): NodeDomain {
         return NodeDomain(
             id = nodeUi.id,
             value = nodeUi.value,
@@ -20,8 +20,8 @@ class PresentationNodeMapper @Inject constructor() {
             id = domain.id,
             value = domain.value,
             parentId = domain.parent,
-            deleted = domain.deleted
+            deleted = domain.deleted,
+            depth = domain.depth
         )
     }
-
 }
