@@ -29,6 +29,8 @@ data class ScreenState(
     val selectedRemoteId: String? = null
 )
 
+const val NewNodePrefix = "Node"
+
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val applyOnRemoteInteractor: ApplyOnRemoteInteractor,
@@ -42,8 +44,6 @@ class MainScreenViewModel @Inject constructor(
 
     private val mapper: PresentationNodeMapper
 ) : ViewModel() {
-
-    private var createdNodesCounter: Int = 0
 
     private val _cacheFlow =
         fetchLocalDatabaseInteractor().map { list -> list.map { mapper.toUi(it) } }
@@ -116,6 +116,18 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             loadRemoteNodeInteractor.invoke(it)
         }
+    }
+
+    fun getNewNodeName(): String {
+        val nodes = screenState.value.cacheLines.values
+            .filter { Regex("$NewNodePrefix(\\d+)").matches(it.value) }
+
+        val nodeCounter = nodes.map {
+            it.value.split(NewNodePrefix)[1].toInt()
+        }
+            .maxOrNull() ?: 0
+
+        return NewNodePrefix + (nodeCounter + 1)
     }
 }
 

@@ -110,7 +110,6 @@ fun ButtonsBar(
     screenState: ScreenState
 ) {
     var stringDialog: Pair<String, (String) -> Unit>? by remember { mutableStateOf(null) }
-    var nodeNameCounter: Int by remember { mutableStateOf(0) }
 
     Column(
         modifier = modifier,
@@ -122,7 +121,8 @@ fun ButtonsBar(
 
             Button(
                 onClick = {
-                    stringDialog = "node$nodeNameCounter" to { stringValue -> viewModel.create(stringValue) }
+                    stringDialog =
+                        viewModel.getNewNodeName() to { stringValue -> viewModel.create(stringValue) }
                 },
                 enabled = screenState.selectedCacheId != null
             ) {
@@ -131,15 +131,16 @@ fun ButtonsBar(
 
             Button(
                 onClick = {
-                    val editingItemValue = screenState.cacheLines[screenState.selectedCacheId]?.value ?: "node$nodeNameCounter"
-                    stringDialog = editingItemValue to { stringValue -> viewModel.edit(stringValue) }
+                    val editingItemValue =
+                        screenState.cacheLines[screenState.selectedCacheId]?.value
+                            ?: viewModel.getNewNodeName()
+                    stringDialog =
+                        editingItemValue to { stringValue -> viewModel.edit(stringValue) }
                 },
                 enabled = screenState.selectedCacheId != null && !screenState.cacheLines.isEmpty()
             ) {
                 Text(stringResource(R.string.edit))
             }
-
-
 
             Button(
                 onClick = { viewModel.deleteSelected() },
@@ -147,8 +148,6 @@ fun ButtonsBar(
             ) {
                 Text(stringResource(R.string.delete))
             }
-
-
         }
 
         Row(modifier = Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -170,8 +169,7 @@ fun ButtonsBar(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Red,      // основной цвет кнопки
                 ),
-                onClick = { viewModel.reset() },
-                //modifier = Modifier.align(Alignment.CenterHorizontally)
+                onClick = { viewModel.reset() }
             ) {
                 Text(stringResource(R.string.reset))
             }
@@ -179,8 +177,10 @@ fun ButtonsBar(
     }
 
     if (stringDialog != null) {
-        StringValueDialog(onDismiss = { stringDialog = null }, onConfirm = {
-            viewModel.create(it)
+        val value = stringDialog!!.first
+
+        StringValueDialog(defaultValue = value, onDismiss = { stringDialog = null }, onConfirm = {
+            stringDialog!!.second.invoke(it)
         })
     }
 }
@@ -211,10 +211,11 @@ fun TreeView(
 
 @Composable
 fun StringValueDialog(
+    defaultValue: String = "Value",
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(defaultValue) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -223,7 +224,7 @@ fun StringValueDialog(
             TextField(
                 value = text,
                 onValueChange = { text = it },
-                placeholder = { Text("Value") }
+                placeholder = { Text(defaultValue) }
             )
         },
         confirmButton = {
