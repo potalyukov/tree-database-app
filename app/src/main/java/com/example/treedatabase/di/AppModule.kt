@@ -16,6 +16,8 @@ import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
 import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractorImpl
 import com.example.treedatabase.domain.interactors.ResetAllInteractor
 import com.example.treedatabase.domain.interactors.ResetAllInteractorImpl
+import com.example.treedatabase.domain.interactors.UpdateCacheItemInteractor
+import com.example.treedatabase.domain.interactors.UpdateCacheItemInteractorImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -48,4 +50,7 @@ abstract class AppModule {
 
     @Binds
     internal abstract fun bindLoadRemoteNodeInteractor(impl: LoadRemoteNodeInteractorImpl): LoadRemoteNodeInteractor
+
+    @Binds
+    internal abstract fun bindUpdateCacheItemInteractor(impl: UpdateCacheItemInteractorImpl): UpdateCacheItemInteractor
 }

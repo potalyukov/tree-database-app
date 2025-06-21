@@ -22,7 +22,7 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
     override suspend fun loadRemoteNode(id: String): NodeDomain? {
         val nodeData = remoteDataSource.fetchNode(id)
         val nodeDomain = nodeData?.let {
-            localDataSource.addNode(nodeData)
+            localDataSource.applyNode(nodeData)
             nodeMapper.toDomain(nodeData)
         }
         return nodeDomain
@@ -39,7 +39,11 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun create(node: NodeDomain) {
-        localDataSource.addNode(nodeMapper.toData(node))
+        localDataSource.applyNode(nodeMapper.toData(node))
+    }
+
+    override suspend fun update(node: NodeDomain) {
+        localDataSource.applyNode(nodeMapper.toData(node))
     }
 
     override fun getAllLocalNodes(): Flow<List<NodeDomain>> {

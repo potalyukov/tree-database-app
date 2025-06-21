@@ -9,6 +9,7 @@ import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
 import com.example.treedatabase.domain.interactors.ResetAllInteractor
+import com.example.treedatabase.domain.interactors.UpdateCacheItemInteractor
 import com.example.treedatabase.domain.models.NodeDomain
 import com.example.treedatabase.presentation.mappers.PresentationNodeMapper
 import com.example.treedatabase.presentation.model.NodeUi
@@ -37,6 +38,7 @@ class MainScreenViewModel @Inject constructor(
     private val fetchRemoteDatabaseInteractor: FetchRemoteDatabaseInteractor,
     private val loadRemoteNodeInteractor: LoadRemoteNodeInteractor,
     private val resetAllInteractor: ResetAllInteractor,
+    private val updateCacheItemInteractor: UpdateCacheItemInteractor,
 
     private val mapper: PresentationNodeMapper
 ) : ViewModel() {
@@ -90,7 +92,10 @@ class MainScreenViewModel @Inject constructor(
     }
 
     fun edit(value: String) = viewModelScope.launch {
+        val editingId = screenState.value.selectedCacheId
+        val selectedItem = screenState.value.cacheLines.get(editingId) ?: return@launch
 
+        updateCacheItemInteractor.invoke(mapper.toDomain(selectedItem.copy(value = value)))
     }
 
     fun deleteSelected() = screenState.value.selectedCacheId?.let {

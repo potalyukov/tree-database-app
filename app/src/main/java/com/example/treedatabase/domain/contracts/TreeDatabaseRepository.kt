@@ -12,5 +12,6 @@ interface TreeDatabaseRepository {
     suspend fun apply()
 
     suspend fun create(node: NodeDomain)
+    suspend fun update(node: NodeDomain)
     suspend fun deleteInCache(id: String)
 }

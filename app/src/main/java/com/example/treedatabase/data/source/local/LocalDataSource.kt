@@ -7,6 +7,6 @@ interface LocalDataSource {
     fun fetchAll(): Flow<List<NodeData>>
     suspend fun getAll(): List<NodeData>
     suspend fun resetDatabase()
-    suspend fun addNode(nodeData: NodeData)
+    suspend fun applyNode(nodeData: NodeData)
     suspend fun delete(id: String)
 }

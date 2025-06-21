@@ -16,7 +16,7 @@ class LocalDataSourceImpl @Inject constructor(
         return localNodeDao.getAllNodes().map { list -> list.map { mapper.toData(it) } }
     }
 
-    override suspend fun addNode(nodeData: NodeData) {
+    override suspend fun applyNode(nodeData: NodeData) {
         localNodeDao.applyNodes(listOf(mapper.toLocalDbEntity(nodeData)))
     }
 
