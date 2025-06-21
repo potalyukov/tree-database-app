@@ -76,12 +76,12 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun create() = viewModelScope.launch {
+    fun create(value: String) = viewModelScope.launch {
         val parentListId = screenState.value.selectedCacheId
         val selectedItem = screenState.value.cacheLines.get(parentListId) ?: return@launch
 
         val newItem = NodeDomain(
-            value = "node${createdNodesCounter++}",
+            value = value,
             parent = selectedItem.id,
             deleted = false
         )
@@ -89,7 +89,7 @@ class MainScreenViewModel @Inject constructor(
         createNewInCacheInteractor(newItem)
     }
 
-    fun edit() = viewModelScope.launch {
+    fun edit(value: String) = viewModelScope.launch {
 
     }
 
