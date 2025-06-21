@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 data class ScreenState(
     val databaseLines: List<NodeUi> = emptyList(),
-    val cacheLines: Map<Long, NodeUi> = emptyMap(),
-    val selectedCacheId: Long? = null,
-    val selectedRemoteId: Long? = null
+    val cacheLines: Map<String, NodeUi> = emptyMap(),
+    val selectedCacheId: String? = null,
+    val selectedRemoteId: String? = null
 )
 
 @HiltViewModel
@@ -64,13 +64,13 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun cacheItemClick(id: Long) {
+    fun cacheItemClick(id: String) {
         _screenState.update {
             it.copy(selectedCacheId = if (it.selectedCacheId == id) null else id)
         }
     }
 
-    fun databaseItemClick(id: Long) {
+    fun databaseItemClick(id: String) {
         _screenState.update {
             it.copy(selectedRemoteId = if (it.selectedRemoteId == id) null else id)
         }

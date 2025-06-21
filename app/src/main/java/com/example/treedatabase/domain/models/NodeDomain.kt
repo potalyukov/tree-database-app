@@ -1,3 +1,11 @@
 package com.example.treedatabase.domain.models
 
-data class NodeDomain (val id: Long = 0, val value: String, val parent: Long?, val deleted : Boolean, val depth : Int = 0)
+import java.util.UUID
+
+data class NodeDomain(
+    val id: String = UUID.randomUUID().toString(),
+    val value: String,
+    val parent: String?,
+    val deleted: Boolean,
+    val depth: Int = 0
+)

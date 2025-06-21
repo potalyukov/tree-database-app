@@ -21,6 +21,14 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun resetDatabase() {
-        localNodeDao.reset()
+        localNodeDao.clearAllNodes()
+    }
+
+    override suspend fun getAll(): List<NodeData> {
+        return localNodeDao.getAllSuspend().map { mapper.toData(it) }
+    }
+
+    override suspend fun delete(id: String) {
+        localNodeDao.deleteNodeRecursively(id)
     }
 }

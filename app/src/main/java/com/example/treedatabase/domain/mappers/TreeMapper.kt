@@ -7,7 +7,7 @@ class TreeMapper @Inject constructor() {
     fun sortAsTreeInDepth(list: List<NodeDomain>): List<NodeDomain> {
         val treeMap = list.groupBy { it.parent }
 
-        fun traverse(parentId: Long?, depth: Int): List<NodeDomain> {
+        fun traverse(parentId: String?, depth: Int): List<NodeDomain> {
             val children = treeMap[parentId].orEmpty()
             return children.flatMap { node ->
                 val updatedNode = node.copy(depth = depth)

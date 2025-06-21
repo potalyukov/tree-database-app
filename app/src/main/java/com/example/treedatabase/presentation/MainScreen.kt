@@ -124,8 +124,8 @@ fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = v
 fun TreeView(
     modifier: Modifier = Modifier.fillMaxSize(),
     nodes: List<NodeUi> = emptyList(),
-    selectedId: Long? = null,
-    onItemClick: (Long) -> Unit
+    selectedId: String? = null,
+    onItemClick: (String) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
 
@@ -134,7 +134,7 @@ fun TreeView(
             val decoration = if (node.deleted) TextDecoration.LineThrough else TextDecoration.None
 
             Text(
-                text = "#[${node.id}]$indent * ${node.value}",
+                text = "#[${node.id.substring(0..3)}]$indent * ${node.value}",
                 textDecoration = decoration,
                 modifier = Modifier
                     .background(if (node.id == selectedId) PurpleGrey80 else Color.Transparent)

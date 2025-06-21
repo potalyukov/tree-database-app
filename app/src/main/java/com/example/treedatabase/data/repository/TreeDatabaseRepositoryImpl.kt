@@ -4,7 +4,6 @@ import com.example.treedatabase.data.mappers.NodeMapper
 import com.example.treedatabase.data.model.NodeData
 import com.example.treedatabase.data.source.local.LocalDataSource
 import com.example.treedatabase.data.source.remote.RemoteDataSource
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 import com.example.treedatabase.domain.contracts.TreeDatabaseRepository
 import com.example.treedatabase.domain.models.NodeDomain
 import kotlinx.coroutines.flow.Flow
@@ -21,22 +20,23 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
         return remoteDataSource.fetchAll().map { list -> list.map { nodeMapper.toDomain(it) } }
     }
 
-    override suspend fun loadRemoteNode(id: Int): NodeDomain {
+    override suspend fun loadRemoteNode(id: String): NodeDomain? {
         val nodeData = remoteDataSource.fetchNode(id)
-        localDataSource.addNode(nodeData)
-        return nodeMapper.toDomain(nodeData)
+        val nodeDomain = nodeData?.let {
+            localDataSource.addNode(nodeData)
+            nodeMapper.toDomain(nodeData)
+        }
+        return nodeDomain
     }
 
-    override suspend fun apply(nodes: List<NodeDomain>) {
-        remoteDataSource.apply(nodes.map { nodeMapper.toData(it) })
+    override suspend fun apply() {
+        val local = localDataSource.getAll()
+        remoteDataSource.apply(local)
     }
 
     override suspend fun resetAll() {
         remoteDataSource.resetDatabase()
-        remoteDataSource.apply(listOf(NodeData(0, "root", null, false)))
         localDataSource.resetDatabase()
-        localDataSource.addNode(NodeData(0, "root", null, false))
-
     }
 
     override suspend fun create(node: NodeDomain) {
@@ -45,5 +45,9 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
 
     override fun getAllLocalNodes(): Flow<List<NodeDomain>> {
         return localDataSource.fetchAll().map { list -> list.map { nodeMapper.toDomain(it) } }
+    }
+
+    override suspend fun deleteInCache(id: String) {
+        localDataSource.delete(id)
     }
 }

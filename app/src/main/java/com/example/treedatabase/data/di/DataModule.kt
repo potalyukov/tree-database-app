@@ -14,6 +14,7 @@ import com.example.treedatabase.data.source.local.db.LocalDatabase
 import com.example.treedatabase.data.source.local.db.LocalNodeDao
 import com.example.treedatabase.data.source.remote.RemoteDataSource
 import com.example.treedatabase.data.source.remote.RemoteDataSourceImpl
+import com.example.treedatabase.data.source.remote.api.simulated_remote_db.OnCreateDbCallback
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,8 +23,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-private const val REMOTE_DB = "remote_nodes_database"
-private const val LOCAL_DB = "local_nodes_database"
+private const val LOCAL_DB_NAME = "local_nodes_database"
+private const val REMOTE_DB_NAME = "remote_nodes_database"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -37,12 +38,15 @@ abstract class DataModule {
     companion object {
         @Provides
         @Singleton
-        fun provideRemoteNodeDatabase(@ApplicationContext context: Context) =
+        fun provideRemoteNodeDatabase(
+            @ApplicationContext context: Context,
+            onCreateCallback: OnCreateDbCallback
+        ) =
             Room.databaseBuilder(
                 context.applicationContext,
                 RemoteDatabase::class.java,
-                REMOTE_DB
-            ).build()
+                REMOTE_DB_NAME
+            ).addCallback(onCreateCallback).build()
 
         @Provides
         @Singleton
@@ -50,7 +54,7 @@ abstract class DataModule {
             Room.databaseBuilder(
                 context.applicationContext,
                 LocalDatabase::class.java,
-                LOCAL_DB
+                LOCAL_DB_NAME
             ).build()
 
         @Provides

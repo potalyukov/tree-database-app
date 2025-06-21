@@ -8,8 +8,9 @@ interface TreeDatabaseRepository {
     fun getAllLocalNodes() : Flow<List<NodeDomain>>
     suspend fun resetAll()
 
-    suspend fun loadRemoteNode(id: Int): NodeDomain
-    suspend fun apply(nodes: List<NodeDomain>)
+    suspend fun loadRemoteNode(id: String): NodeDomain?
+    suspend fun apply()
 
     suspend fun create(node: NodeDomain)
+    suspend fun deleteInCache(id: String)
 }

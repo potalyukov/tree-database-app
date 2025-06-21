@@ -10,7 +10,7 @@ class RemoteDataSourceImpl @Inject constructor(
     private val treeApi: TreeDatabaseApi,
     private val secretApi: TreeDatabaseApiSecretDoor
 ) : RemoteDataSource {
-    override suspend fun fetchNode(id: Int): NodeData {
+    override suspend fun fetchNode(id: String): NodeData? {
         return treeApi.fetchNode(id)
     }
 

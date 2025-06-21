@@ -7,8 +7,8 @@ import com.example.treedatabase.data.model.NodeData
 
 @Entity(tableName = "nodes")
 data class RemoteNodeEntity(
-    @PrimaryKey val uid: Long,
+    @PrimaryKey val uid: String,
     @ColumnInfo(name = "value") val value: String,
-    @ColumnInfo(name = "parentId") val parentId: Long?,
+    @ColumnInfo(name = "parentId") val parentId: String?,
     @ColumnInfo(name = "deleted") val deleted: Boolean
 )

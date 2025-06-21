@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,18 +13,29 @@ interface LocalNodeDao {
     @Query("SELECT * FROM nodes")
     fun getAllNodes(): Flow<List<LocalNodeEntity>>
 
+    @Query("SELECT * FROM nodes")
+    suspend fun getAllSuspend(): List<LocalNodeEntity>
+
     @Query("SELECT * FROM nodes WHERE uid = :uid")
-    suspend fun getNodeById(uid: Long): LocalNodeEntity?
+    suspend fun getNodeById(uid: String): LocalNodeEntity?
 
     @Query("UPDATE nodes SET deleted = 1 WHERE uid = :uid")
-    suspend fun deleteNodeById(uid: Long)
+    suspend fun deleteNodeById(uid: String)
+
+    @Query("""
+        WITH RECURSIVE node_tree AS (
+            SELECT uid FROM nodes WHERE uid = :uid
+            UNION ALL
+            SELECT n.uid FROM nodes n
+            JOIN node_tree nt ON n.parentId = nt.uid
+        )
+        UPDATE nodes SET deleted = 1 WHERE uid IN node_tree
+    """)
+    suspend fun deleteNodeRecursively(uid: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun applyNodes(nodes: List<LocalNodeEntity>)
 
-    @Query("SELECT * FROM nodes WHERE parentId = :parentId")
-    suspend fun getDirectChildren(parentId: Long): List<LocalNodeEntity>
-
     @Query("DELETE FROM nodes")
-    suspend fun reset()
+    suspend fun clearAllNodes()
 }

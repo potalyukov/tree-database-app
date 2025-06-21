@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 // Not real API. Used for remote db simulation
 interface TreeDatabaseApiSecretDoor {
     fun fetchAll() : Flow<List<NodeData>>
+    suspend fun fetchAllSuspend() : List<NodeData>
     suspend fun resetDatabase()
 }
