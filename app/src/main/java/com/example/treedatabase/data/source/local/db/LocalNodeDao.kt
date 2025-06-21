@@ -4,8 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,7 +31,7 @@ interface LocalNodeDao {
     """)
     suspend fun deleteNodeRecursively(uid: String)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun applyNodes(nodes: List<LocalNodeEntity>)
 
     @Query("DELETE FROM nodes")

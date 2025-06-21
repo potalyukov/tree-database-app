@@ -1,7 +1,6 @@
 package com.example.treedatabase.data.repository
 
 import com.example.treedatabase.data.mappers.NodeMapper
-import com.example.treedatabase.data.model.NodeData
 import com.example.treedatabase.data.source.local.LocalDataSource
 import com.example.treedatabase.data.source.remote.RemoteDataSource
 import com.example.treedatabase.domain.contracts.TreeDatabaseRepository
