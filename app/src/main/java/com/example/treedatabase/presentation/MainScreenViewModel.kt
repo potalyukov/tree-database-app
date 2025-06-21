@@ -89,6 +89,10 @@ class MainScreenViewModel @Inject constructor(
         createNewInCacheInteractor(newItem)
     }
 
+    fun edit() = viewModelScope.launch {
+
+    }
+
     fun deleteSelected() = screenState.value.selectedCacheId?.let {
         viewModelScope.launch {
             deleteInCacheInteractor.invoke(it)

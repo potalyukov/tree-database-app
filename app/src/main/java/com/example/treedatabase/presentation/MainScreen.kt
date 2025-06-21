@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,7 @@ import com.example.treedatabase.presentation.model.NodeUi
 import com.example.treedatabase.presentation.ui.theme.Pink80
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey40
 import com.example.treedatabase.presentation.ui.theme.PurpleGrey80
+import com.example.treedatabase.presentation.ui.theme.Red
 
 @Composable
 fun MainScreen(
@@ -69,7 +71,8 @@ fun MainScreen(
             modifier = Modifier
                 .background(PurpleGrey80)
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            screenState = screenState
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -95,27 +98,69 @@ fun MainScreen(
 }
 
 @Composable
-fun ButtonsBar(modifier: Modifier = Modifier, viewModel: MainScreenViewModel = viewModel()) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
+fun ButtonsBar(
+    modifier: Modifier = Modifier,
+    viewModel: MainScreenViewModel = viewModel(),
+    screenState: ScreenState
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(modifier = Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Button(onClick = { viewModel.create() }) {
+
+
+            Button(
+                onClick = { viewModel.create() },
+                enabled = screenState.selectedCacheId != null
+            ) {
                 Text(stringResource(R.string.create))
             }
-            Button(onClick = { viewModel.deleteSelected() }) {
+
+            Button(
+                onClick = { viewModel.edit() },
+                enabled = screenState.selectedCacheId != null
+            ) {
+                Text(stringResource(R.string.edit))
+            }
+
+
+
+            Button(
+                onClick = { viewModel.deleteSelected() },
+                enabled = screenState.selectedCacheId != null
+            ) {
                 Text(stringResource(R.string.delete))
             }
-            Button(onClick = { viewModel.reset() }) {
-                Text(stringResource(R.string.reset))
-            }
-            Button(onClick = { viewModel.apply() }) {
+
+
+        }
+
+        Row(modifier = Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+
+            Button(
+                onClick = { viewModel.apply() },
+                enabled = !screenState.cacheLines.isEmpty()
+            ) {
                 Text(stringResource(R.string.apply))
             }
-        }
-        Button(
-            onClick = { viewModel.loadSelected() },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(stringResource(R.string.load))
+
+            Button(
+                onClick = { viewModel.loadSelected() },
+                enabled = screenState.selectedRemoteId != null
+            ) {
+                Text(stringResource(R.string.load))
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Red,      // основной цвет кнопки
+                ),
+                onClick = { viewModel.reset() },
+                //modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(stringResource(R.string.reset))
+            }
         }
     }
 }
