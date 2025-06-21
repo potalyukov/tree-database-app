@@ -154,7 +154,7 @@ fun ButtonsBar(
 
             Button(
                 onClick = { viewModel.apply() },
-                enabled = !screenState.cacheLines.isEmpty()
+                enabled = screenState.cacheLines.isNotEmpty()
             ) {
                 Text(stringResource(R.string.apply))
             }
@@ -167,7 +167,7 @@ fun ButtonsBar(
             }
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Red,      // основной цвет кнопки
+                    containerColor = Red,
                 ),
                 onClick = { viewModel.reset() }
             ) {

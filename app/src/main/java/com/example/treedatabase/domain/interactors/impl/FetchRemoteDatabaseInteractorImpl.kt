@@ -1,6 +1,7 @@
-package com.example.treedatabase.domain.interactors
+package com.example.treedatabase.domain.interactors.impl
 
 import com.example.treedatabase.domain.contracts.TreeDatabaseRepository
+import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.mappers.TreeMapper
 import com.example.treedatabase.domain.models.NodeDomain
 import kotlinx.coroutines.flow.Flow

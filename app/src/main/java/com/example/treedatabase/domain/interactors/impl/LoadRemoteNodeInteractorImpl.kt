@@ -1,6 +1,7 @@
-package com.example.treedatabase.domain.interactors
+package com.example.treedatabase.domain.interactors.impl
 
 import com.example.treedatabase.domain.contracts.TreeDatabaseRepository
+import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
 import javax.inject.Inject
 
 class LoadRemoteNodeInteractorImpl @Inject constructor(private val repository: TreeDatabaseRepository) :
