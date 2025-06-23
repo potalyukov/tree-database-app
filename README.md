@@ -1,11 +1,13 @@
 # Tree Database App 🌳
 ## Main requirement
 implement syncronization through this interface:
-```kotlin
+
+```
 interface TreeDatabaseApi {
   suspend fun fetchNode(id: String): NodeData?
   suspend fun apply(nodes: List<NodeData>)
-}```
+}
+```
 
 ## 📱 Technologies
 - Kotlin
