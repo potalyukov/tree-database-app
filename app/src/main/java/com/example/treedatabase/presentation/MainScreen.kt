@@ -161,7 +161,7 @@ fun ButtonsBar(
 
             Button(
                 onClick = { viewModel.loadSelected() },
-                enabled = screenState.selectedRemoteId != null
+                enabled = screenState.selectedRemoteId != null && screenState.databaseLines.isNotEmpty()
             ) {
                 Text(stringResource(R.string.load))
             }
@@ -199,10 +199,11 @@ fun TreeView(
             val decoration = if (node.deleted) TextDecoration.LineThrough else TextDecoration.None
 
             Text(
-                text = "#[${node.id.substring(0..3)}]$indent * ${node.value}",
+                text = "$indent * ${node.value}",
                 textDecoration = decoration,
                 modifier = Modifier
                     .background(if (node.id == selectedId) PurpleGrey80 else Color.Transparent)
+                    .fillMaxWidth()
                     .clickable { onItemClick(node.id) }
             )
         }

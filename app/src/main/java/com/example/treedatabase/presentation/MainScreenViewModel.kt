@@ -68,13 +68,13 @@ class MainScreenViewModel @Inject constructor(
 
     fun cacheItemClick(id: String) {
         _screenState.update {
-            it.copy(selectedCacheId = if (it.selectedCacheId == id) null else id)
+            it.copy(selectedCacheId = if (it.selectedCacheId == id) null else id, selectedRemoteId = null)
         }
     }
 
     fun databaseItemClick(id: String) {
         _screenState.update {
-            it.copy(selectedRemoteId = if (it.selectedRemoteId == id) null else id)
+            it.copy(selectedRemoteId = if (it.selectedRemoteId == id) null else id, selectedCacheId = null)
         }
     }
 
@@ -106,6 +106,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun reset() = viewModelScope.launch {
         resetAllInteractor()
+        resetSelection()
     }
 
     fun apply() = viewModelScope.launch {
@@ -119,15 +120,17 @@ class MainScreenViewModel @Inject constructor(
     }
 
     fun getNewNodeName(): String {
-        val nodes = screenState.value.cacheLines.values
+        val nodeCounter = screenState.value.cacheLines.values
             .filter { Regex("$NewNodePrefix(\\d+)").matches(it.value) }
-
-        val nodeCounter = nodes.map {
-            it.value.split(NewNodePrefix)[1].toInt()
-        }
-            .maxOrNull() ?: 0
+            .maxOfOrNull {
+                it.value.split(NewNodePrefix)[1].toInt()
+            } ?: 0
 
         return NewNodePrefix + (nodeCounter + 1)
+    }
+
+    private fun resetSelection() {
+        _screenState.update { it.copy(selectedRemoteId = null, selectedCacheId = null) }
     }
 }
 
