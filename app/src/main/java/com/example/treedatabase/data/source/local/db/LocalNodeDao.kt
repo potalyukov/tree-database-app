@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -36,4 +37,26 @@ interface LocalNodeDao {
 
     @Query("DELETE FROM nodes")
     suspend fun clearAllNodes()
+
+    @Query("UPDATE nodes SET deleted = 0 WHERE uid = :id")
+    suspend fun markNodeUndeleted(id: String)
+
+    @Transaction
+    suspend fun applyNodeWithUndeleteChain(node: LocalNodeEntity) {
+        val existing = getNodeById(node.uid)
+
+        if (existing?.deleted == true && node.deleted == false) {
+
+            var currentParentId = node.parentId
+            while (currentParentId != null) {
+                val parent = getNodeById(currentParentId)
+                if (parent == null || !parent.deleted) break
+
+                markNodeUndeleted(parent.uid)
+                currentParentId = parent.parentId
+            }
+        }
+
+        applyNodes(listOf(node))
+    }
 }

@@ -17,7 +17,7 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun applyNode(nodeData: NodeData) {
-        localNodeDao.applyNodes(listOf(mapper.toLocalDbEntity(nodeData)))
+        localNodeDao.applyNodeWithUndeleteChain(mapper.toLocalDbEntity(nodeData))
     }
 
     override suspend fun resetDatabase() {
