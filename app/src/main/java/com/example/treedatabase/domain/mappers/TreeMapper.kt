@@ -5,16 +5,26 @@ import javax.inject.Inject
 
 class TreeMapper @Inject constructor() {
     fun sortAsTreeInDepth(list: List<NodeDomain>): List<NodeDomain> {
-        val treeMap = list.groupBy { it.parent }
+        val nodeMap = list.associateBy { it.id }
+        val childrenMap = list.groupBy { it.parent }
 
-        fun traverse(parentId: String?, depth: Int): List<NodeDomain> {
-            val children = treeMap[parentId].orEmpty()
-            return children.flatMap { node ->
-                val updatedNode = node.copy(depth = depth)
-                listOf(updatedNode) + traverse(node.id, depth + 1)
+        val roots = list.filter { it.parent == null || it.parent !in nodeMap }
+
+        val result = mutableListOf<NodeDomain>()
+
+        fun dfs(node: NodeDomain, depth: Int) {
+            val updated = node.copy(depth = depth)
+            result.add(updated)
+            val children = childrenMap[node.id].orEmpty()
+            for (child in children) {
+                dfs(child, depth + 1)
             }
         }
 
-        return traverse(parentId = null, depth = 0)
+        for (root in roots) {
+            dfs(root, 0)
+        }
+
+        return result
     }
 }

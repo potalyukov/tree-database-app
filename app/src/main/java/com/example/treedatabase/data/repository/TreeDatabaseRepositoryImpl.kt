@@ -33,9 +33,12 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
         remoteDataSource.apply(local)
     }
 
-    override suspend fun resetAll() {
-        remoteDataSource.resetDatabase()
+    override suspend fun resetCache() {
         localDataSource.resetDatabase()
+    }
+
+    override suspend fun resetRemote() {
+        remoteDataSource.resetDatabase()
     }
 
     override suspend fun create(node: NodeDomain) {

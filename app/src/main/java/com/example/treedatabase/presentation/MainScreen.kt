@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -46,13 +47,32 @@ fun MainScreen(
     val screenState by viewModel.screenState.collectAsState()
 
     Column(modifier = modifier.padding(8.dp)) {
-        Text(
-            text = stringResource(R.string.cached_elements),
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            color = PurpleGrey40
-        )
+                .padding(vertical = 4.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.cached_elements),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .weight(1f),
+                color = PurpleGrey40
+            )
+
+            Button(
+                onClick = { viewModel.resetCache() },
+                modifier = Modifier
+                    .alpha(if (screenState.cacheLines.isNotEmpty()) 1f else 0f)
+                    .align(Alignment.CenterVertically),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Red,
+                )
+            ) {
+                Text(stringResource(R.string.reset_cache))
+            }
+
+        }
         TreeView(
             modifier = Modifier
                 .weight(1f)
@@ -137,14 +157,14 @@ fun ButtonsBar(
                     stringDialog =
                         editingItemValue to { stringValue -> viewModel.edit(stringValue) }
                 },
-                enabled = screenState.selectedCacheId != null && !screenState.cacheLines.isEmpty()
+                enabled = screenState.selectedCacheId != null && screenState.cacheLines.isNotEmpty()
             ) {
                 Text(stringResource(R.string.edit))
             }
 
             Button(
                 onClick = { viewModel.deleteSelected() },
-                enabled = screenState.selectedCacheId != null && !screenState.cacheLines.isEmpty()
+                enabled = screenState.selectedCacheId != null && screenState.cacheLines.isNotEmpty()
             ) {
                 Text(stringResource(R.string.delete))
             }
@@ -169,7 +189,7 @@ fun ButtonsBar(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Red,
                 ),
-                onClick = { viewModel.reset() }
+                onClick = { viewModel.resetAll() }
             ) {
                 Text(stringResource(R.string.reset))
             }

@@ -9,4 +9,5 @@
     <string name="remote_database">Remote Database</string>
     <string name="controls">Controls</string>
     <string name="cached_elements">Cached Elements</string>
+    <string name="reset_cache">Reset cache</string>
 </resources>

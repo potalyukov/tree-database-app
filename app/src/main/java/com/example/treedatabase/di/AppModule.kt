@@ -14,8 +14,8 @@ import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.interactors.impl.FetchRemoteDatabaseInteractorImpl
 import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
 import com.example.treedatabase.domain.interactors.impl.LoadRemoteNodeInteractorImpl
-import com.example.treedatabase.domain.interactors.ResetAllInteractor
-import com.example.treedatabase.domain.interactors.impl.ResetAllInteractorImpl
+import com.example.treedatabase.domain.interactors.ResetInteractor
+import com.example.treedatabase.domain.interactors.impl.ResetInteractorImpl
 import com.example.treedatabase.domain.interactors.UpdateCacheItemInteractor
 import com.example.treedatabase.domain.interactors.impl.UpdateCacheItemInteractorImpl
 import dagger.Binds
@@ -37,7 +37,7 @@ abstract class AppModule {
     internal abstract fun bindApplyOnRemoteInteractor(impl: ApplyOnRemoteInteractorImpl): ApplyOnRemoteInteractor
 
     @Binds
-    internal abstract fun bindResetAllInteractor(impl: ResetAllInteractorImpl): ResetAllInteractor
+    internal abstract fun bindResetInteractor(impl: ResetInteractorImpl): ResetInteractor
 
     @Binds
     internal abstract fun bindFetchLocalDatabaseInteractor(impl: FetchLocalDatabaseInteractorImpl): FetchLocalDatabaseInteractor

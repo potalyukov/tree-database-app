@@ -8,7 +8,7 @@ import com.example.treedatabase.domain.interactors.DeleteInCacheInteractor
 import com.example.treedatabase.domain.interactors.FetchLocalDatabaseInteractor
 import com.example.treedatabase.domain.interactors.FetchRemoteDatabaseInteractor
 import com.example.treedatabase.domain.interactors.LoadRemoteNodeInteractor
-import com.example.treedatabase.domain.interactors.ResetAllInteractor
+import com.example.treedatabase.domain.interactors.ResetInteractor
 import com.example.treedatabase.domain.interactors.UpdateCacheItemInteractor
 import com.example.treedatabase.domain.models.NodeDomain
 import com.example.treedatabase.presentation.mappers.PresentationNodeMapper
@@ -39,7 +39,7 @@ class MainScreenViewModel @Inject constructor(
     private val fetchLocalDatabaseInteractor: FetchLocalDatabaseInteractor,
     private val fetchRemoteDatabaseInteractor: FetchRemoteDatabaseInteractor,
     private val loadRemoteNodeInteractor: LoadRemoteNodeInteractor,
-    private val resetAllInteractor: ResetAllInteractor,
+    private val resetInteractor: ResetInteractor,
     private val updateCacheItemInteractor: UpdateCacheItemInteractor,
 
     private val mapper: PresentationNodeMapper
@@ -104,8 +104,13 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun reset() = viewModelScope.launch {
-        resetAllInteractor()
+    fun resetAll() = viewModelScope.launch {
+        resetInteractor(resetCache = true, resetRemote = true)
+        resetSelection()
+    }
+
+    fun resetCache() = viewModelScope.launch {
+        resetInteractor(resetCache = true, resetRemote = false)
         resetSelection()
     }
 
