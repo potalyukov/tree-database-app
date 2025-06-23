@@ -1,6 +1,6 @@
 # Tree Database App 🌳
 ## Main requirement
-implement syncronization through this interface:
+implement synchronization through this interface:
 
 ```
 interface TreeDatabaseApi {
