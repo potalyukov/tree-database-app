@@ -11,18 +11,22 @@ class TreeMapper @Inject constructor() {
         val roots = list.filter { it.parent == null || it.parent !in nodeMap }
 
         val result = mutableListOf<NodeDomain>()
+        val stack = ArrayDeque<Pair<NodeDomain, Int>>() // Pair of node and depth
 
-        fun dfs(node: NodeDomain, depth: Int) {
-            val updated = node.copy(depth = depth)
-            result.add(updated)
-            val children = childrenMap[node.id].orEmpty().sortedBy { it.value }
-            for (child in children) {
-                dfs(child, depth + 1)
-            }
+        // Добавляем корни в стек (в обратном порядке, чтобы сохранить порядок)
+        for (root in roots.sortedByDescending { it.value }) {
+            stack.addFirst(root to 0)
         }
 
-        for (root in roots) {
-            dfs(root, 0)
+        while (stack.isNotEmpty()) {
+            val (node, depth) = stack.removeFirst()
+            val updatedNode = node.copy(depth = depth)
+            result.add(updatedNode)
+
+            val children = childrenMap[node.id].orEmpty().sortedByDescending { it.value }
+            for (child in children) {
+                stack.addFirst(child to depth + 1)
+            }
         }
 
         return result
