@@ -144,7 +144,7 @@ fun ButtonsBar(
                     stringDialog =
                         viewModel.getNewNodeName() to { stringValue -> viewModel.create(stringValue) }
                 },
-                enabled = screenState.selectedCacheId != null
+                enabled = isSelectedCacheItemEditable(screenState)
             ) {
                 Text(stringResource(R.string.create))
             }
@@ -157,14 +157,14 @@ fun ButtonsBar(
                     stringDialog =
                         editingItemValue to { stringValue -> viewModel.edit(stringValue) }
                 },
-                enabled = screenState.selectedCacheId != null && screenState.cacheLines.isNotEmpty()
+                enabled = isSelectedCacheItemEditable(screenState)
             ) {
                 Text(stringResource(R.string.edit))
             }
 
             Button(
                 onClick = { viewModel.deleteSelected() },
-                enabled = screenState.selectedCacheId != null && screenState.cacheLines.isNotEmpty()
+                enabled = isSelectedCacheItemEditable(screenState)
             ) {
                 Text(stringResource(R.string.delete))
             }
@@ -264,4 +264,11 @@ fun StringValueDialog(
             }
         }
     )
+}
+
+private fun isSelectedCacheItemEditable(screenState: ScreenState) : Boolean {
+    val id = screenState.selectedCacheId
+    val node = screenState.cacheLines[id]
+    val locked = node?.deleted ?: true
+    return !locked
 }

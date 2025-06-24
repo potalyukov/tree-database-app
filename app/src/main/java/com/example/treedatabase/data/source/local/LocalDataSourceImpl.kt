@@ -17,7 +17,7 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun createNode(nodeData: NodeData) {
-        localNodeDao.applyNode(
+        localNodeDao.createNode(
             mapper.toLocalDbEntity(
                 nodeData.copy(id = UUID.randomUUID().toString())
             )

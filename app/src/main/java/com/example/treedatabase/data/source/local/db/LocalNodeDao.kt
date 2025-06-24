@@ -18,7 +18,8 @@ interface LocalNodeDao {
     @Query("SELECT * FROM nodes WHERE uid = :uid")
     suspend fun getNodeById(uid: String): LocalNodeEntity?
 
-    @Query("""
+    @Query(
+        """
         WITH RECURSIVE node_tree AS (
             SELECT uid FROM nodes WHERE uid = :uid
             UNION ALL
@@ -26,7 +27,8 @@ interface LocalNodeDao {
             JOIN node_tree nt ON n.parentId = nt.uid
         )
         UPDATE nodes SET deleted = 1 WHERE uid IN node_tree
-    """)
+    """
+    )
     suspend fun deleteNodeRecursively(uid: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -34,6 +36,14 @@ interface LocalNodeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun applyNode(node: LocalNodeEntity)
+
+    @Transaction
+    suspend fun createNode(node: LocalNodeEntity) {
+        if (node.parentId == null) return
+        val parent = getNodeById(node.parentId)
+        if (parent == null || parent.deleted) return
+        applyNode(node)
+    }
 
     @Query("DELETE FROM nodes")
     suspend fun clearAllNodes()
