@@ -28,7 +28,7 @@ class LocalDataSourceImpl @Inject constructor(
         if (!updateRemoved) {
             localNodeDao.applyNodeIfNotDeleted(mapper.toLocalDbEntity(nodeData))
         } else {
-            localNodeDao.applyNodeWithUndeleteChain(mapper.toLocalDbEntity(nodeData))
+            localNodeDao.applyAndFix(mapper.toLocalDbEntity(nodeData))
         }
     }
 

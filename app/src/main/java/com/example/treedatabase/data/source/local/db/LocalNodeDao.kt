@@ -61,23 +61,11 @@ interface LocalNodeDao {
     }
 
     @Transaction
-    suspend fun applyNodeWithUndeleteChain(node: LocalNodeEntity) {
-        if (!node.deleted) {
-            var currentParentId = node.parentId
-            while (currentParentId != null) {
-                val parent = getNodeById(currentParentId)
-                if (parent == null || !parent.deleted) break
-
-                markNodeDeleted(parent.uid, false)
-                currentParentId = parent.parentId
-            }
-            applyNodes(listOf(node))
-        } else {
-            applyNodes(listOf(node))
-            val allNodes = getAllSuspend()
-            val fixed = fixTree(allNodes)
-            applyNodes(fixed)
-        }
+    suspend fun applyAndFix(node: LocalNodeEntity) {
+        applyNodes(listOf(node))
+        val allNodes = getAllSuspend()
+        val fixed = fixTree(allNodes)
+        applyNodes(fixed)
     }
 
     fun fixTree(nodes: List<LocalNodeEntity>): List<LocalNodeEntity> {
