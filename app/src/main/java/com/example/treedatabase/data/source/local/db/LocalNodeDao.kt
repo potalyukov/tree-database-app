@@ -62,10 +62,7 @@ interface LocalNodeDao {
 
     @Transaction
     suspend fun applyNodeWithUndeleteChain(node: LocalNodeEntity) {
-        val existing = getNodeById(node.uid)
-
-        if (existing?.deleted == true && !node.deleted) {
-
+        if (!node.deleted) {
             var currentParentId = node.parentId
             while (currentParentId != null) {
                 val parent = getNodeById(currentParentId)
