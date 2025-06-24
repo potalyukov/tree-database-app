@@ -13,7 +13,7 @@ class OnCreateDbCallback @Inject constructor(private val daoProvider: dagger.Laz
         super.onCreate(db)
 
         CoroutineScope(Dispatchers.IO).launch {
-            daoProvider.get().insertNode(RemoteNodeEntity("root", "root", null, false))
+            daoProvider.get().reset()
         }
     }
 }
