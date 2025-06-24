@@ -36,13 +36,33 @@ interface RemoteNodeDao {
     @Transaction
     suspend fun reset() {
         clearAllNodes()
-        insertNode(
-            RemoteNodeEntity(
-                uid = "root",
-                value = "root",
-                parentId = null,
-                deleted = false
-            )
+
+        val rootNode = RemoteNodeEntity(
+            uid = "root",
+            value = "root",
+            parentId = null,
+            deleted = false
         )
+
+        val branch1Nodes = mutableListOf<RemoteNodeEntity>().apply {
+            add(RemoteNodeEntity("node1", "Node 1", "root", false))
+            add(RemoteNodeEntity("node2", "Node 2", "node1", false))
+            add(RemoteNodeEntity("node3", "Node 3", "node2", false))
+            add(RemoteNodeEntity("node4", "Node 4", "node3", false))
+            add(RemoteNodeEntity("node5", "Node 5", "node4", false))
+        }
+
+        val branch2Nodes = mutableListOf<RemoteNodeEntity>().apply {
+            add(RemoteNodeEntity("node6", "Node 6", "root", false))
+            add(RemoteNodeEntity("node7", "Node 7", "node6", false))
+            add(RemoteNodeEntity("node8", "Node 8", "node7", false))
+            add(RemoteNodeEntity("node9", "Node 9", "node8", false))
+            add(RemoteNodeEntity("node10", "Node 10", "node9", false))
+        }
+
+        // Вставляем все узлы
+        insertNode(rootNode)
+        branch1Nodes.forEach { insertNode(it) }
+        branch2Nodes.forEach { insertNode(it) }
     }
 }
