@@ -15,7 +15,7 @@ class TreeMapper @Inject constructor() {
         fun dfs(node: NodeDomain, depth: Int) {
             val updated = node.copy(depth = depth)
             result.add(updated)
-            val children = childrenMap[node.id].orEmpty()
+            val children = childrenMap[node.id].orEmpty().sortedBy { it.value }
             for (child in children) {
                 dfs(child, depth + 1)
             }
