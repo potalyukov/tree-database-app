@@ -60,9 +60,29 @@ interface RemoteNodeDao {
             add(RemoteNodeEntity("node10", "Node 10", "node9", false))
         }
 
-        // Вставляем все узлы
         insertNode(rootNode)
         branch1Nodes.forEach { insertNode(it) }
         branch2Nodes.forEach { insertNode(it) }
     }
+
+    @Transaction
+    suspend fun applyNodesWithRecursiveMark(nodes: List<RemoteNodeEntity>) {
+        applyNodes(nodes)
+
+        nodes.filter { it.deleted }.forEach { node ->
+            markNodeAndChildrenAsDeleted(node.uid)
+        }
+    }
+
+    @Query("""
+        WITH RECURSIVE child_nodes AS (
+            SELECT uid FROM nodes WHERE uid = :parentId
+            UNION
+            SELECT n.uid FROM nodes n
+            JOIN child_nodes cn ON n.parentId = cn.uid
+        )
+        UPDATE nodes SET deleted = 1 
+        WHERE uid IN (SELECT uid FROM child_nodes)
+    """)
+    suspend fun markNodeAndChildrenAsDeleted(parentId: String)
 }
