@@ -45,12 +45,12 @@ class MainScreenViewModel @Inject constructor(
     private val mapper: PresentationNodeMapper
 ) : ViewModel() {
 
-    private val _cacheFlow =
+    private val cacheFlow =
         fetchLocalDatabaseInteractor().map { list -> list.map { mapper.toUi(it) } }
-    private val _remoteFlow =
+    private val remoteFlow =
         fetchRemoteDatabaseInteractor().map { list -> list.map { mapper.toUi(it) } }
 
-    private val _combinedFlow = combine(_cacheFlow, _remoteFlow) { cache, remote ->
+    private val combinedFlow = combine(cacheFlow, remoteFlow) { cache, remote ->
         screenState.value.copy(
             databaseLines = remote,
             cacheLines = cache.associateBy { it.id }
@@ -62,7 +62,7 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _combinedFlow.collect { _screenState.value = it }
+            combinedFlow.collect { _screenState.value = it }
         }
     }
 
