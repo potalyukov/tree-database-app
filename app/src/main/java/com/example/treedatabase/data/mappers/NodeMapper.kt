@@ -1,8 +1,8 @@
 package com.example.treedatabase.data.mappers
 
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 import com.example.treedatabase.data.model.NodeData
 import com.example.treedatabase.data.source.local.db.LocalNodeEntity
+import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeEntity
 import com.example.treedatabase.domain.models.NodeDomain
 import javax.inject.Inject
 

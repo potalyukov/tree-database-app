@@ -1,13 +1,10 @@
 package com.example.treedatabase.data.source.remote.api
 
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeDao
 import com.example.treedatabase.data.mappers.NodeMapper
 import com.example.treedatabase.data.model.NodeData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SimulatedApi @Inject constructor(
@@ -15,15 +12,6 @@ class SimulatedApi @Inject constructor(
     val nodeMapper: NodeMapper
 ) : TreeDatabaseApi,
     TreeDatabaseApiSecretDoor {
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            val all = fetchAllSuspend()
-            if (all.isEmpty()) {
-               // resetDatabase()
-            }
-        }
-    }
 
     override suspend fun fetchNode(id: String): NodeData? {
         return remoteNodeDao.getNodeById(id)?.let { nodeMapper.toData(it) }

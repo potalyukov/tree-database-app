@@ -2,11 +2,6 @@ package com.example.treedatabase.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.treedatabase.data.source.remote.api.SimulatedApi
-import com.example.treedatabase.data.source.remote.api.TreeDatabaseApi
-import com.example.treedatabase.data.source.remote.api.TreeDatabaseApiSecretDoor
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteDatabase
-import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeDao
 import com.example.treedatabase.data.mappers.NodeMapper
 import com.example.treedatabase.data.source.local.LocalDataSource
 import com.example.treedatabase.data.source.local.LocalDataSourceImpl
@@ -14,7 +9,12 @@ import com.example.treedatabase.data.source.local.db.LocalDatabase
 import com.example.treedatabase.data.source.local.db.LocalNodeDao
 import com.example.treedatabase.data.source.remote.RemoteDataSource
 import com.example.treedatabase.data.source.remote.RemoteDataSourceImpl
+import com.example.treedatabase.data.source.remote.api.SimulatedApi
+import com.example.treedatabase.data.source.remote.api.TreeDatabaseApi
+import com.example.treedatabase.data.source.remote.api.TreeDatabaseApiSecretDoor
 import com.example.treedatabase.data.source.remote.api.simulated_remote_db.OnCreateDbCallback
+import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteDatabase
+import com.example.treedatabase.data.source.remote.api.simulated_remote_db.RemoteNodeDao
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
