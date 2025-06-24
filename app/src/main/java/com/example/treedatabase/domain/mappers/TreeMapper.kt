@@ -13,7 +13,6 @@ class TreeMapper @Inject constructor() {
         val result = mutableListOf<NodeDomain>()
         val stack = ArrayDeque<Pair<NodeDomain, Int>>() // Pair of node and depth
 
-        // Добавляем корни в стек (в обратном порядке, чтобы сохранить порядок)
         for (root in roots.sortedByDescending { it.value }) {
             stack.addFirst(root to 0)
         }

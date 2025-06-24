@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SimulatedApi @Inject constructor(
-    val remoteNodeDao: RemoteNodeDao,
-    val nodeMapper: NodeMapper
+    private val remoteNodeDao: RemoteNodeDao,
+    private val nodeMapper: NodeMapper
 ) : TreeDatabaseApi,
     TreeDatabaseApiSecretDoor {
 
