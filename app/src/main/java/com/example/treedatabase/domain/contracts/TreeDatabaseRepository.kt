@@ -10,9 +10,9 @@ interface TreeDatabaseRepository {
     suspend fun resetRemote()
 
     suspend fun loadRemoteNode(id: String): NodeDomain?
-    suspend fun apply()
+    suspend fun applyCacheOnRemote()
 
-    suspend fun create(node: NodeDomain)
-    suspend fun update(node: NodeDomain)
+    suspend fun createInCache(node: NodeDomain)
+    suspend fun updateInCache(node: NodeDomain)
     suspend fun deleteInCache(id: String)
 }

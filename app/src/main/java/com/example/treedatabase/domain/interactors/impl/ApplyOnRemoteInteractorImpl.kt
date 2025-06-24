@@ -7,6 +7,6 @@ import javax.inject.Inject
 class ApplyOnRemoteInteractorImpl @Inject constructor(private val repository: TreeDatabaseRepository) :
     ApplyOnRemoteInteractor {
     override suspend fun invoke() {
-        repository.apply()
+        repository.applyCacheOnRemote()
     }
 }

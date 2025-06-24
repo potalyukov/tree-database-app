@@ -22,13 +22,13 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
     override suspend fun loadRemoteNode(id: String): NodeDomain? {
         val nodeData = remoteDataSource.fetchNode(id)
         val nodeDomain = nodeData?.let {
-            localDataSource.applyNode(nodeData)
+            localDataSource.createOrUpdate(nodeData, true)
             nodeMapper.toDomain(nodeData)
         }
         return nodeDomain
     }
 
-    override suspend fun apply() {
+    override suspend fun applyCacheOnRemote() {
         val local = localDataSource.getAll()
         remoteDataSource.apply(local)
     }
@@ -41,12 +41,12 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
         remoteDataSource.resetDatabase()
     }
 
-    override suspend fun create(node: NodeDomain) {
-        localDataSource.applyNode(nodeMapper.toData(node))
+    override suspend fun createInCache(node: NodeDomain) {
+        localDataSource.createNode(nodeMapper.toData(node))
     }
 
-    override suspend fun update(node: NodeDomain) {
-        localDataSource.applyNode(nodeMapper.toData(node))
+    override suspend fun updateInCache(node: NodeDomain) {
+        localDataSource.createOrUpdate(nodeMapper.toData(node), false)
     }
 
     override fun getAllLocalNodes(): Flow<List<NodeDomain>> {

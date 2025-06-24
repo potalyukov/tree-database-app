@@ -8,6 +8,6 @@ import javax.inject.Inject
 class UpdateCacheItemInteractorImpl @Inject constructor(private val repository: TreeDatabaseRepository):
     UpdateCacheItemInteractor {
     override suspend fun invoke(updatedNode: NodeDomain) {
-        repository.update(updatedNode)
+        repository.updateInCache(updatedNode)
     }
 }

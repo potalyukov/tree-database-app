@@ -18,9 +18,6 @@ interface LocalNodeDao {
     @Query("SELECT * FROM nodes WHERE uid = :uid")
     suspend fun getNodeById(uid: String): LocalNodeEntity?
 
-    @Query("UPDATE nodes SET deleted = 1 WHERE uid = :uid")
-    suspend fun deleteNodeById(uid: String)
-
     @Query("""
         WITH RECURSIVE node_tree AS (
             SELECT uid FROM nodes WHERE uid = :uid
@@ -35,6 +32,9 @@ interface LocalNodeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun applyNodes(nodes: List<LocalNodeEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun applyNode(node: LocalNodeEntity)
+
     @Query("DELETE FROM nodes")
     suspend fun clearAllNodes()
 
@@ -42,10 +42,19 @@ interface LocalNodeDao {
     suspend fun markNodeUndeleted(id: String)
 
     @Transaction
+    suspend fun applyNodeIfNotDeleted(node: LocalNodeEntity) {
+        val existing = getNodeById(node.uid)
+        if (existing != null && existing.deleted) {
+            return
+        }
+        applyNodes(listOf(node))
+    }
+
+    @Transaction
     suspend fun applyNodeWithUndeleteChain(node: LocalNodeEntity) {
         val existing = getNodeById(node.uid)
 
-        if (existing?.deleted == true && node.deleted == false) {
+        if (existing?.deleted == true && !node.deleted) {
 
             var currentParentId = node.parentId
             while (currentParentId != null) {
