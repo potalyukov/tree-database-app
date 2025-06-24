@@ -48,8 +48,8 @@ interface LocalNodeDao {
     @Query("DELETE FROM nodes")
     suspend fun clearAllNodes()
 
-    @Query("UPDATE nodes SET deleted = 0 WHERE uid = :id")
-    suspend fun markNodeUndeleted(id: String)
+    @Query("UPDATE nodes SET deleted = :removed WHERE uid = :id")
+    suspend fun markNodeDeleted(id: String, removed: Boolean)
 
     @Transaction
     suspend fun applyNodeIfNotDeleted(node: LocalNodeEntity) {
@@ -68,11 +68,35 @@ interface LocalNodeDao {
                 val parent = getNodeById(currentParentId)
                 if (parent == null || !parent.deleted) break
 
-                markNodeUndeleted(parent.uid)
+                markNodeDeleted(parent.uid, false)
                 currentParentId = parent.parentId
+            }
+            applyNodes(listOf(node))
+        } else {
+            applyNodes(listOf(node))
+            val allNodes = getAllSuspend()
+            val fixed = fixTree(allNodes)
+            applyNodes(fixed)
+        }
+    }
+
+    fun fixTree(nodes: List<LocalNodeEntity>): List<LocalNodeEntity> {
+        val childrenMap = nodes.groupBy { it.parentId }
+        val deletedSet = mutableSetOf<String>()
+
+        fun markDeleted(uid: String) {
+            if (deletedSet.add(uid)) {
+                val children = childrenMap[uid].orEmpty()
+                for (child in children) {
+                    markDeleted(child.uid)
+                }
             }
         }
 
-        applyNodes(listOf(node))
+        nodes.filter { it.deleted }.forEach { markDeleted(it.uid) }
+
+        return nodes.map { node ->
+            if (node.uid in deletedSet) node.copy(deleted = true) else node
+        }
     }
 }
