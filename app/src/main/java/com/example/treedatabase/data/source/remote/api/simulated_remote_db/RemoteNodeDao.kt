@@ -66,12 +66,14 @@ interface RemoteNodeDao {
     }
 
     @Transaction
-    suspend fun applyNodesWithRecursiveMark(nodes: List<RemoteNodeEntity>) {
+    suspend fun applyNodesWithRecursiveMark(nodes: List<RemoteNodeEntity>) : List<RemoteNodeEntity> {
         applyNodes(nodes)
 
         nodes.filter { it.deleted }.forEach { node ->
             markNodeAndChildrenAsDeleted(node.uid)
         }
+
+        return getAllSuspend()
     }
 
     @Query("""

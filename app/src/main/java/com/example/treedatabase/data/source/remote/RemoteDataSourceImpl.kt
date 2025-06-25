@@ -14,8 +14,8 @@ class RemoteDataSourceImpl @Inject constructor(
         return treeApi.fetchNode(id)
     }
 
-    override suspend fun apply(nodes: List<NodeData>) {
-        treeApi.apply(nodes)
+    override suspend fun apply(nodes: List<NodeData>): List<NodeData> {
+        return treeApi.apply(nodes)
     }
 
     override fun fetchAll(): Flow<List<NodeData>> {

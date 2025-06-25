@@ -17,8 +17,10 @@ class SimulatedApi @Inject constructor(
         return remoteNodeDao.getNodeById(id)?.let { nodeMapper.toData(it) }
     }
 
-    override suspend fun apply(nodes: List<NodeData>) {
-        remoteNodeDao.applyNodesWithRecursiveMark(nodes.map { nodeMapper.toRemoteDbEntity(it) })
+    override suspend fun apply(nodes: List<NodeData>): List<NodeData> {
+        val nodes =
+            remoteNodeDao.applyNodesWithRecursiveMark(nodes.map { nodeMapper.toRemoteDbEntity(it) })
+        return nodes.map { nodeMapper.toData(it) }
     }
 
     override fun fetchAll(): Flow<List<NodeData>> {

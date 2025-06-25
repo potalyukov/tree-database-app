@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
     suspend fun fetchNode(id: String): NodeData?
-    suspend fun apply(nodes: List<NodeData>)
+    suspend fun apply(nodes: List<NodeData>): List<NodeData>
     fun fetchAll(): Flow<List<NodeData>>
     suspend fun resetDatabase()
 }

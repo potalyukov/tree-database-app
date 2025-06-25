@@ -30,7 +30,13 @@ class TreeDatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun applyCacheOnRemote() {
         val local = localDataSource.getAll()
-        remoteDataSource.apply(local)
+        val appliedNodes = remoteDataSource.apply(local).associateBy { it.id }
+
+        local.forEach {
+            if (appliedNodes[it.id]?.deleted == true && !it.deleted) {
+                localDataSource.delete(it.id)
+            }
+        }
     }
 
     override suspend fun resetCache() {
