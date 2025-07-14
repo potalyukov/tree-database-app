@@ -14,6 +14,9 @@ This project was created as a **technical assignment for a product company**. Wh
 - Clean Architecture + MVVM
 - Flow, Kotlin Coroutines
 
+## Screenshot
+![App Screenshot](./readme-src/screenshot.png)
+
 ## Main requirement
 implement synchronization through this interface:
 
@@ -29,7 +32,7 @@ interface TreeDatabaseApi {
 The primary goal was not just to meet the assignment requirements but to build the app using **modern Android development best practices**, including:
 
 - **Jetpack Compose** for UI
-- **Dagger Hilt** for DI
+- **Dagger/Hilt** for DI
 - **Unidirectional data flow (MVI pattern)**
 - **Clean Architecture** with clear separation into `data`, `domain`, and `presentation` layers
 - **Kotlin Coroutines** and **StateFlow** for reactive state management
@@ -45,8 +48,10 @@ The primary goal was not just to meet the assignment requirements but to build t
 - Visualization of recursive tree structures
 - Optimized for performance when dealing with large node trees
 
-## Limitations
+## Main components
+![Architecture Diagram](./readme-src/diagram.jpg)
 
+## Limitations
 - This is a sandbox-style test project and **not intended for production**
 - Minimal UI/UX polish due to focus on architecture and logic
 - No persistent database (in-memory simulation for both cache and "database")
