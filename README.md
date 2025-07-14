@@ -1,4 +1,4 @@
-# Tree Database App
+# Tree Database App 🌳
 
 A test project implementing a tree-like data structure in an Android application using modern architecture principles.
 
